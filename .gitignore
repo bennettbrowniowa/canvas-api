@@ -1,2 +1,3 @@
-secret.py
+api_token.py
+*.pyc
  
