@@ -1,5 +1,6 @@
 import requests
 import json
+import copy #There has to be a better way to do the copy list in paginate
 
 from api_token import * # set authorization token, stored in a separate file listed in git.ignore
 #token is now set using another file which can be kept more securely than this code.
@@ -22,7 +23,7 @@ def get_api_response(api_endpoint):
     data = paginate(first_response_json, response.headers)
     return data
 
-import copy #There has to be a better way to do this
+
 def paginate(first_response_json, response_header_json):
     #return the first response JSON, with all the following pages 
     #of the server's paginated response linked in the ['links'].split(';').['next']
@@ -59,14 +60,18 @@ def get_summaries():
     summaries = get_api_response(api_endpoint)                  
     user_ids = []
     page_views = [] 
-    roles = []
     max_page_views = []
     for student in summaries:
+        #ids
         user_ids.append(student['id'])
+        
+        #views
         if 'page_views' in student:
             page_views.append(student['page_views'])
         else:
-            max_page_views.append(0)   
+            page_views.append(0)   
+        
+        #max_views
         if 'max_page_view' in student:
             max_page_views.append(student['max_page_view'])
         else:
@@ -74,8 +79,17 @@ def get_summaries():
               
     return user_ids, page_views, max_page_views
 
+def get_views_of_student(student_id):
+    api_endpoint = '/api/v1/courses/'+ courseid + '/analytics/users/' + str(student_id) + '/activity'
+    data = get_api_response(api_endpoint)                  
+    print "views: ", data
+    page_views = data['page_views'] 
+    participations = data['participations']
+    return page_views, participations
+
 
                                                                                  
 #a = get_people_in_course(courseid)
 user_ids, names, roles = get_people_in_course(courseid)
 summaries = get_summaries()
+page_views, participations = get_views_of_student(user_ids[0])
