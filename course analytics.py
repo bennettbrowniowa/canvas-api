@@ -27,13 +27,17 @@ def paginate(first_response_json):
         pass #aggregate
     return aggregate_response_json    
 
-def get_student_userids_in_course(courseid):
+def get_people_in_course(courseid):
     api_endpoint = '/api/v1/courses/'+ courseid + '/enrollments'
     data = get_api_response(api_endpoint)            
-    ids=[]
+    user_ids = []
+    names = [] 
+    roles = []
     for student in data:
-        ids.append(student['user_id'])
-    return ids
-
-                       
-a = get_student_userids_in_course(courseid)    
+        user_ids.append(student['user_id'])
+        names.append(student['user']['name'])
+        roles.append(student['role'])       
+    return user_ids, names, roles
+                           
+user_ids, names, roles = get_people_in_course(courseid)
+        
