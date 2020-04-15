@@ -17,10 +17,11 @@ def get_api_response(api_endpoint):
     #response.headers has a 'next' item
     while False: #for now
         pass
+    return data
     
 def get_student_userids_in_course(courseid):
     api_endpoint = '/api/v1/courses/'+ courseid + '/enrollments'
-    get_api_response(api_endpoint)            
+    data = get_api_response(api_endpoint)            
     ids=[]
     for student in data:
         ids.append(student['user_id'])
