@@ -52,6 +52,30 @@ def get_people_in_course(courseid):
         names.append(student['user']['name'])
         roles.append(student['role'])       
     return user_ids, names, roles
+
                            
+def get_summaries():
+    api_endpoint = '/api/v1/courses/'+ courseid + '/analytics/student_summaries'
+    summaries = get_api_response(api_endpoint)                  
+    user_ids = []
+    page_views = [] 
+    roles = []
+    max_page_views = []
+    for student in summaries:
+        user_ids.append(student['id'])
+        if 'page_views' in student:
+            page_views.append(student['page_views'])
+        else:
+            max_page_views.append(0)   
+        if 'max_page_view' in student:
+            max_page_views.append(student['max_page_view'])
+        else:
+            max_page_views.append('-')   
+              
+    return user_ids, page_views, max_page_views
+
+
+                                                                                 
 #a = get_people_in_course(courseid)
 user_ids, names, roles = get_people_in_course(courseid)
+summaries = get_summaries()
